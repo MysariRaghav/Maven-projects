@@ -52,8 +52,7 @@ public class LoginController {
 			model.put("message","new user created");
 			return "index";
 		}
-		return "redirect:signup";
-		
+		return "redirect:signup";		
 	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
