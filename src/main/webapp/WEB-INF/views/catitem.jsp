@@ -9,7 +9,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-<form:form action="/ghgh " method="POST" modelAttribute="cartlist">
+<form:form action="/manipulateCart" method="POST" modelAttribute="cartlist">
 <table>
 <tr>
 <th></th>
@@ -30,8 +30,8 @@
 </c:forEach> 
 </table>
 <br></br>
-<input type="submit" value="save for latter"/>
-<input type="submit" value="delete from cart"/>
+<input type="submit" name="save for latter" value="save for latter"/>
+<input type="submit" name="delete from cart" value="delete from cart"/>
 
 </form:form>
 </body>
