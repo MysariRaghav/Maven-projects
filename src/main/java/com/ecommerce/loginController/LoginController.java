@@ -83,7 +83,8 @@ public class LoginController {
 		
 		List<cart> savedSessionCart= (List<cart>) model.get("savedSessionCart");
 		
-		loi.setItemsList(savedSessionCart!=null?savedSessionCart:new ArrayList<cart>());
+		loi.setItemsList(savedSessionCart!=null?new ArrayList<cart>(savedSessionCart):new ArrayList<cart>());
+		
 		model.addAttribute("listOfItems", loi);
 		model.addAttribute("list", serv.retrivecart(name));
 
@@ -95,25 +96,30 @@ public class LoginController {
 	@RequestMapping (value="/mycart")
 	public String cartpop(ModelMap model, @ModelAttribute("listOfItems")ListOfItems loi){
 		//System.out.println(loi.getItemsList());
-		List<cart> cartList = loi.getItemsList();
+		List<cart> cartItems = loi.getItemsList();
 
-		if(cartList==null)	
-			cartList= new ArrayList<cart>();			
+		if(cartItems==null)	
+			cartItems= new ArrayList<cart>();			
 		
+		/*if(model.get("savedSessionCart")==null)
+		{
+				model.addAttribute("savedSessionCart", new LinkedHashSet<cart>(loi.getItemsList()));			
+		}
+		else{
+			((LinkedHashSet<cart>)(model.get("savedSessionCart"))).addAll(loi.getItemsList());	
+		}	*/
 		if(model.get("savedSessionCart")!=null)
 		{
 			List<cart> savedSessionCart= (List<cart>) model.get("savedSessionCart");
 			String itemTypeName=  (String) model.get("name");
-			cartList.addAll((removeCurrentCategoryItems(itemTypeName, savedSessionCart)));
+			cartItems.addAll((removeCurrentCategoryItems(itemTypeName, savedSessionCart)));
 		}
-		model.addAttribute("savedSessionCart",cartList);
+		model.addAttribute("savedSessionCart",cartItems);
 		
     //Written by Praveen
-		ListOfItems cartItems= new ListOfItems();
-		cartItems.setItemsList(new ArrayList<cart>());
-		model.addAttribute("cartlist",cartItems);
-    
-		System.out.println("hello");
+		ListOfItems cartList= new ListOfItems();
+		cartList.setItemsList(new ArrayList<cart>());
+		model.addAttribute("cartList",cartList);
 				
 		return "catitem";
 		
@@ -139,11 +145,15 @@ public class LoginController {
 	@RequestMapping (value="/manipulateCart", params={"save for latter", "!delete from cart"})
 	public String cartWishList(ModelMap model, @ModelAttribute("cartList")ListOfItems cartList){
 		
+		List<cart> checkedCartList= cartList.getItemsList();
+		if(checkedCartList==null)	
+			checkedCartList = new ArrayList<cart>();
+		
 		if(model.get("sessionWishList")==null)
 		{
 			model.addAttribute("sessionWishList", new LinkedHashSet<cart>());			
 		}
-		((LinkedHashSet<cart>)(model.get("sessionWishList"))).addAll(cartList.getItemsList()); 
+		((LinkedHashSet<cart>)(model.get("sessionWishList"))).addAll(checkedCartList); 
 
 		cartDelete(model, cartList);
 		cartList.setItemsList(new ArrayList<cart>());
@@ -154,32 +164,37 @@ public class LoginController {
 	@RequestMapping (value="/manipulateCart", params={"!save for latter", "delete from cart"})
 	public String cartDelete(ModelMap model, @ModelAttribute("cartList")ListOfItems cartList){
 		
-		System.out.println("delete from cart");
-		List<cart> deleteItems=cartList.getItemsList();
+		List<cart> checkedCartList= cartList.getItemsList();
+		if(checkedCartList==null)	
+			checkedCartList = new ArrayList<cart>();
+			
+		
 		List<cart> savedSessionCart= (List<cart>) model.get("savedSessionCart");
 		
 		if(savedSessionCart!=null)
 		{
-			savedSessionCart.removeAll(deleteItems);
+			savedSessionCart.removeAll(checkedCartList);
 		}
 		
-		model.addAttribute("cartlist",cartList);
+		model.addAttribute("cartList",cartList);
 		return "catitem";
 	}
 	
 	@RequestMapping (value="/manipulateWishListCart", params={"!save for latter", "delete from cart"})
 	public String wishListCartDelete(ModelMap model, @ModelAttribute("cartList")ListOfItems cartList){
 		
-		System.out.println("delete from cart");
-		List<cart> deleteItems=cartList.getItemsList();
+		List<cart> checkedCartList= cartList.getItemsList();
+		if(checkedCartList==null)	
+			checkedCartList = new ArrayList<cart>();
+		
 		Set<cart> savedSessionCart= (Set<cart>) model.get("sessionWishList");
 		
 		if(savedSessionCart!=null)
 		{
-			savedSessionCart.removeAll(deleteItems);
+			savedSessionCart.removeAll(checkedCartList);
 		}
 		
-		model.addAttribute("cartlist",cartList);
+		model.addAttribute("cartList",cartList);
 		return "wishList";
 	}
 	

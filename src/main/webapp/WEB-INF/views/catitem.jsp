@@ -9,7 +9,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-<form:form action="/manipulateCart" method="POST" modelAttribute="cartlist">
+<form:form action="/manipulateCart" method="POST" modelAttribute="cartList">
 <table>
 <tr>
 <th></th>
