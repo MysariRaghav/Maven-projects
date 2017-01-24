@@ -96,7 +96,7 @@ public class LoginController {
 	public String cartpop(ModelMap model, @ModelAttribute("listOfItems")ListOfItems loi){
 		//System.out.println(loi.getItemsList());
 		List<cart> cartList = loi.getItemsList();
-	
+
 		if(cartList==null)	
 			cartList= new ArrayList<cart>();			
 		
@@ -108,6 +108,10 @@ public class LoginController {
 		}
 		model.addAttribute("savedSessionCart",cartList);
 		
+    //Written by Praveen
+		ListOfItems l2= new ListOfItems();
+		model.addAttribute("cartlist",l2);
+    
 		System.out.println("hello");
 				
 		return "catitem";
