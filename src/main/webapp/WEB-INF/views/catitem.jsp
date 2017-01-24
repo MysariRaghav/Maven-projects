@@ -20,12 +20,12 @@
 </tr>
 <c:forEach items="${savedSessionCart}" var="citem">
 <tr>
- <td><form:checkbox path="itemsList" name="selected" value="${citem}"/>
+ <td><form:checkbox path="itemsList" name="selected" value="${citem.key}"/>
 
-<td>${citem.name}</td>
-<td>${citem.price}</td>
+<td>${citem.key.name}</td>
+<td>${citem.key.price}</td>
 <th>*</th>
-<td><input type="text"  name="taotalprice"/></td>
+<td><input type="text"  name="taotalprice" placeholder="${citem.value}"/></td>
 </tr>
 </c:forEach> 
 </table>

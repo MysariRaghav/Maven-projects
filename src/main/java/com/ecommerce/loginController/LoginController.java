@@ -3,9 +3,11 @@ package com.ecommerce.loginController;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -52,7 +54,8 @@ public class LoginController {
 			model.put("message","new user created");
 			return "index";
 		}
-		return "redirect:signup";		
+		return "redirect:signup";
+		
 	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -80,9 +83,9 @@ public class LoginController {
 		
 		ListOfItems loi= new ListOfItems();
 		
-		List<cart> savedSessionCart= (List<cart>) model.get("savedSessionCart");
+		Map<cart, Integer> savedSessionCart= (Map<cart, Integer>) model.get("savedSessionCart");
 		
-		loi.setItemsList(savedSessionCart!=null?new ArrayList<cart>(savedSessionCart):new ArrayList<cart>());
+		loi.setItemsList(savedSessionCart!=null?new ArrayList<cart>(savedSessionCart.keySet()):new ArrayList<cart>());
 		
 		model.addAttribute("listOfItems", loi);
 		model.addAttribute("list", serv.retrivecart(name));
@@ -96,6 +99,7 @@ public class LoginController {
 	public String cartpop(ModelMap model, @ModelAttribute("listOfItems")ListOfItems loi){
 		//System.out.println(loi.getItemsList());
 		List<cart> cartItems = loi.getItemsList();
+		Map<cart, Integer> mapCart = new HashMap<cart, Integer>();
 
 		if(cartItems==null)	
 			cartItems= new ArrayList<cart>();			
@@ -109,11 +113,13 @@ public class LoginController {
 		}	*/
 		if(model.get("savedSessionCart")!=null)
 		{
-			List<cart> savedSessionCart= (List<cart>) model.get("savedSessionCart");
-			String itemTypeName=  (String) model.get("name");
-			cartItems.addAll((removeCurrentCategoryItems(itemTypeName, savedSessionCart)));
+			mapCart= (Map<cart, Integer>) model.get("savedSessionCart");
 		}
-		model.addAttribute("savedSessionCart",cartItems);
+		for (cart temp : cartItems) {
+			Integer count = mapCart.get(temp);
+			mapCart.put(temp, (count == null) ? 1 : count + 1);
+		}
+		model.addAttribute("savedSessionCart", mapCart);
 		
     //Written by Praveen
 		ListOfItems cartList= new ListOfItems();
@@ -168,11 +174,11 @@ public class LoginController {
 			checkedCartList = new ArrayList<cart>();
 			
 		
-		List<cart> savedSessionCart= (List<cart>) model.get("savedSessionCart");
+		Map<cart, Integer> savedSessionCart= (Map<cart, Integer>) model.get("savedSessionCart");
 		
 		if(savedSessionCart!=null)
 		{
-			savedSessionCart.removeAll(checkedCartList);
+			savedSessionCart.keySet().removeAll(checkedCartList);
 		}
 		
 		model.addAttribute("cartList",cartList);
