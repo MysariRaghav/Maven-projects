@@ -9,7 +9,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-<form:form action="/manipulateCart" method="POST" modelAttribute="cartList">
+<form:form action="${pageContext.request.contextPath}/manipulateCart" method="POST" modelAttribute="cartList">
 <table>
 <tr>
 <th></th>
