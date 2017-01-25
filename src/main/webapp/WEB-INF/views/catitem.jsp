@@ -9,7 +9,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-<form:form action="/ghgh " method="POST" modelAttribute="cartlist">
+<form:form action="/manipulateCart" method="POST" modelAttribute="cartList">
 <table>
 <tr>
 <th></th>
@@ -20,18 +20,18 @@
 </tr>
 <c:forEach items="${savedSessionCart}" var="citem">
 <tr>
- <td><form:checkbox path="itemsList" name="selected" value="${citem}"/>
+ <td><form:checkbox path="itemsList" name="selected" value="${citem.key}"/>
 
-<td>${citem.name}</td>
-<td>${citem.price}</td>
+<td>${citem.key.name}</td>
+<td>${citem.key.price}</td>
 <th>*</th>
-<td><input type="text"  name="taotalprice"/></td>
+<td><input type="text"  name="taotalprice" placeholder="${citem.value}"/></td>
 </tr>
 </c:forEach> 
 </table>
 <br></br>
-<input type="submit" value="save for latter"/>
-<input type="submit" value="delete from cart"/>
+<input type="submit" name="save for latter" value="save for latter"/>
+<input type="submit" name="delete from cart" value="delete from cart"/>
 
 </form:form>
 </body>

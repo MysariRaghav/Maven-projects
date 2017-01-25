@@ -3,9 +3,13 @@ package com.ecommerce.loginController;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -25,7 +29,7 @@ import com.ecommerce.service.ListOfItems;
 import com.ecommerce.service.cart;
 
 @Controller	
-@SessionAttributes({"savedSessionCart", "name"})
+@SessionAttributes({"savedSessionCart", "name", "sessionWishList"})
 public class LoginController {
 	
 	boolean b=true;
@@ -79,13 +83,12 @@ public class LoginController {
 		
 		ListOfItems loi= new ListOfItems();
 		
-		List<cart> savedSessionCart= (List<cart>) model.get("savedSessionCart");
-		//System.out.println((savedSessionCart==null || savedSessionCart.isEmpty())?"isNull Or Empty":savedSessionCart.get(0));
+		Map<cart, Integer> savedSessionCart= (Map<cart, Integer>) model.get("savedSessionCart");
 		
-		loi.setItemsList(savedSessionCart!=null?savedSessionCart:new ArrayList<cart>());
+		loi.setItemsList(savedSessionCart!=null?new ArrayList<cart>(savedSessionCart.keySet()):new ArrayList<cart>());
+		
 		model.addAttribute("listOfItems", loi);
 		model.addAttribute("list", serv.retrivecart(name));
-		List<cart> cart = new ArrayList<cart>();
 
 		model.put("name",name);
 		return "items"; 
@@ -95,31 +98,39 @@ public class LoginController {
 	@RequestMapping (value="/mycart")
 	public String cartpop(ModelMap model, @ModelAttribute("listOfItems")ListOfItems loi){
 		//System.out.println(loi.getItemsList());
-		List<cart> cartList = loi.getItemsList();
+		List<cart> cartItems = loi.getItemsList();
+		Map<cart, Integer> mapCart = new HashMap<cart, Integer>();
 
-		if(cartList==null)	
-			cartList= new ArrayList<cart>();			
+		if(cartItems==null)	
+			cartItems= new ArrayList<cart>();			
 		
+		/*if(model.get("savedSessionCart")==null)
+		{
+				model.addAttribute("savedSessionCart", new LinkedHashSet<cart>(loi.getItemsList()));			
+		}
+		else{
+			((LinkedHashSet<cart>)(model.get("savedSessionCart"))).addAll(loi.getItemsList());	
+		}	*/
 		if(model.get("savedSessionCart")!=null)
 		{
-			List<cart> savedSessionCart= (List<cart>) model.get("savedSessionCart");
-			String itemTypeName=  (String) model.get("name");
-			cartList.addAll((removeCurrentCategoryItems(itemTypeName, savedSessionCart)));
+			mapCart= (Map<cart, Integer>) model.get("savedSessionCart");
 		}
-		model.addAttribute("savedSessionCart",cartList);
+		for (cart temp : cartItems) {
+			Integer count = mapCart.get(temp);
+			mapCart.put(temp, (count == null) ? 1 : count + 1);
+		}
+		model.addAttribute("savedSessionCart", mapCart);
 		
-    //Written by Praveen
-		ListOfItems l2= new ListOfItems();
-		model.addAttribute("cartlist",l2);
-    
-		System.out.println("hello");
+		ListOfItems cartList= new ListOfItems();
+		cartList.setItemsList(new ArrayList<cart>());
+		model.addAttribute("cartList",cartList);
 				
 		return "catitem";
 		
 		
 	}
 
-	private List<cart> removeCurrentCategoryItems(String currentItemType,List<cart> savedSessionCart) {
+	private List<cart> removeCurrentCategoryItems(String currentItemType, List<cart> savedSessionCart) {
 		// TODO Auto-generated method stub
 		Iterator<cart> cartIterator = savedSessionCart.iterator();
 		while(cartIterator.hasNext())
@@ -132,5 +143,64 @@ public class LoginController {
 		}
 		return savedSessionCart;
 	}
+	
+	
+	
+	@RequestMapping (value="/manipulateCart", params={"save for latter", "!delete from cart"})
+	public String cartWishList(ModelMap model, @ModelAttribute("cartList")ListOfItems cartList){
+		
+		List<cart> checkedCartList= cartList.getItemsList();
+		if(checkedCartList==null)	
+			checkedCartList = new ArrayList<cart>();
+		
+		if(model.get("sessionWishList")==null)
+		{
+			model.addAttribute("sessionWishList", new LinkedHashSet<cart>());			
+		}
+		((LinkedHashSet<cart>)(model.get("sessionWishList"))).addAll(checkedCartList); 
+
+		cartDelete(model, cartList);
+		cartList.setItemsList(new ArrayList<cart>());
+		model.addAttribute("cartList", cartList);
+		return "wishList";
+	}
+	
+	@RequestMapping (value="/manipulateCart", params={"!save for latter", "delete from cart"})
+	public String cartDelete(ModelMap model, @ModelAttribute("cartList")ListOfItems cartList){
+		
+		List<cart> checkedCartList= cartList.getItemsList();
+		if(checkedCartList==null)	
+			checkedCartList = new ArrayList<cart>();
+			
+		
+		Map<cart, Integer> savedSessionCart= (Map<cart, Integer>) model.get("savedSessionCart");
+		
+		if(savedSessionCart!=null)
+		{
+			savedSessionCart.keySet().removeAll(checkedCartList);
+		}
+		
+		model.addAttribute("cartList",cartList);
+		return "catitem";
+	}
+	
+	@RequestMapping (value="/manipulateWishListCart", params={"!save for latter", "delete from cart"})
+	public String wishListCartDelete(ModelMap model, @ModelAttribute("cartList")ListOfItems cartList){
+		
+		List<cart> checkedCartList= cartList.getItemsList();
+		if(checkedCartList==null)	
+			checkedCartList = new ArrayList<cart>();
+		
+		Set<cart> savedSessionCart= (Set<cart>) model.get("sessionWishList");
+		
+		if(savedSessionCart!=null)
+		{
+			savedSessionCart.removeAll(checkedCartList);
+		}
+		
+		model.addAttribute("cartList",cartList);
+		return "wishList";
+	}
+	
 
 }
