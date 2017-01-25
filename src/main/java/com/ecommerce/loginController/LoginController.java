@@ -121,7 +121,6 @@ public class LoginController {
 		}
 		model.addAttribute("savedSessionCart", mapCart);
 		
-    //Written by Praveen
 		ListOfItems cartList= new ListOfItems();
 		cartList.setItemsList(new ArrayList<cart>());
 		model.addAttribute("cartList",cartList);
