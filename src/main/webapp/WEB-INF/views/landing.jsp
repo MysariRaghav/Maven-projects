@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+	<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -10,9 +10,9 @@
 To see all the electronics products <br/>
 <br/>
 
-<a href="/shoping-iteams?name=electronics" >Click Here</a><br></br>
+<a href="${pageContext.request.contextPath}/shoping-iteams?name=electronics" >Click Here</a><br></br>
 To see all the book products <br/>
-<a href="/shoping-iteams?name=books" >Click Here</a>
+<a href="${pageContext.request.contextPath}/shoping-iteams?name=books" >Click Here</a>
 <!-- if you want to pass two are more links to one controller then pass it with in href as
 parameters as above and use on parameters at the @Requestparam side.as above.
 

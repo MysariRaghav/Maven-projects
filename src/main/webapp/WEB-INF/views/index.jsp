@@ -5,7 +5,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-<form method="post" action="/login">
+<form method="post" action="${pageContext.request.contextPath}/login">
 
     <label>UserName:</label><input type="text" name="uname" placeholer="Username.." />
     <label>Password:</label><input type="password" name="pword" placeholer="*****" />

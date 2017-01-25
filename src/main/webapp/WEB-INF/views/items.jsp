@@ -9,7 +9,7 @@
 <title>Insert title here</title>
 </head>
 <body>
- <form:form action="/mycart" method="post" modelAttribute="listOfItems">
+ <form:form action="${pageContext.request.contextPath}/mycart" method="post" modelAttribute="listOfItems">
 <table>
      <caption>${name} items are here</caption>
      <thead>
@@ -35,11 +35,10 @@
              <td>${cartitem.price}</td> 
              
           </tr>   
-       </c:forEach>
-       <input type="submit" value="addTo cart"/>
-       
+       </c:forEach>      
      </tbody>
 </table>
+<input type="submit" value="addTo cart"/>
 </form:form>
 </body>
 </html>
