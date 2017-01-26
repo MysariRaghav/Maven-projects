@@ -11,7 +11,7 @@ public class dbConnection {
 	public Connection connect() throws Exception{
 		Connection conn = null;
 	    Class.forName("com.mysql.jdbc.Driver");
-		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cart","root","password");
+		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cart","root","123456");
 		if (conn == null){
 			System.out.println("not Connected");
 			throw new NullPointerException();
